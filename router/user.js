@@ -4,6 +4,31 @@ const jwt = require('jsonwebtoken')
 const router = express.Router()
 
 // get userInfo
+router.get('/', (req, res) => {
+    userModel
+        .find()
+        .then(users => {
+            res.json({
+                msg : "get userInfo",
+                count : users.length,
+                userInfo : users.map(user => {
+                    return {
+                        id : user._id,
+                        name : user.name,
+                        email : user.email,
+                        password : user.password,
+                        profileImage : user.profileImage,
+                        rule : user.rule,
+                    }
+                })
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                msg : err.message
+            })
+        })
+})
 
 // detail get userInfo
 

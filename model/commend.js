@@ -5,7 +5,7 @@ const commendSchema = mongoose.Schema(
         user : {
             type : mongoose.Schema.Types.ObjectId,
             ref : 'user',
-            required : true
+            default : 'nonUser'
         },
         record : {
             type : mongoose.Schema.Types.ObjectId,

@@ -50,7 +50,7 @@ router.get('/', checkAuth, async (req, res) => {
                     id : book._id,
                     user : book.user,
                     bookImage : book.bookImage,
-                    title : book.title,
+                    titles : book.titles,
                     date : book.createdAt
                 }
             })
@@ -78,7 +78,7 @@ router.get('/:bookId', checkAuth, async (req, res) => {
                 id : book._id,
                 user : book.user,
                 bookImage : book.bookImage,
-                title : book.title
+                titles : book.titles
             }
         })
     }
@@ -90,31 +90,35 @@ router.get('/:bookId', checkAuth, async (req, res) => {
 })
 
 // register book
-router.post('/', checkAuth, upload.single('bookImage'), async (req, res) => {
+router.post('/', checkAuth, upload.single('bookImage'), (req, res) => {
 
-    const {user, title} = req.body
+    const {user, titles} = req.body
 
-    const newBook = new bookSchema(
-        {
-            user,
-            title,
-            bookImage : req.file.path
-        }
-    )
+    const newBook = new bookSchema({
+        user,
+        titles,
+        bookImage : req.file.path
+    })
 
-    try{
-        const book = await newBook.save()
-
-        res.json({
-            msg : "register book",
-            bookInfo : book
+    newBook
+        .save()
+        .then(book => {
+            res.json({
+                msg : "register book",
+                bookInfo : {
+                    id : book._id,
+                    user : book.user,
+                    bookImage : book.bookImage,
+                    title : book.titles,
+                    date : book.createdAt
+                }
+            })
         })
-    }
-    catch(err){
-        res.status(500).json({
-            msg: err.message
+        .catch(err => {
+            res.status(500).json({
+                msg: err.message
+            })
         })
-    }
 })
 
 // update book

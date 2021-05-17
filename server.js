@@ -20,6 +20,8 @@ app.use(cors())
 const connectDB = require('./config/database')
 connectDB()
 
+app.use('/uploads', express.static('uploads'))
+
 app.use('/user', userRouter)
 app.use('/commend', commendRouter)
 app.use('/record', recordRouter)

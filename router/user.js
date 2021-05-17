@@ -10,7 +10,7 @@ const router = express.Router()
 // sign up
 router.post('/signup', async (req, res) => {
 
-    const {name, email, nickname, password} = req.body
+    const {name, email, password} = req.body
 
     try{
         const user = await userModel.findOne({email})
@@ -19,18 +19,10 @@ router.post('/signup', async (req, res) => {
                 msg : "user email, please other email"
             })
         }
-        else if(user){
-            const user = await user.findOne({nickname})
-            if(user){
-                return res.status(401).json({
-                    msg : "user nickname, please other nickname"
-                })
-            }
-        }
         else{
             const user = new userModel(
                 {
-                    name, email, nickname, password
+                    name, email, password
                 }
             )
 
@@ -49,13 +41,13 @@ router.post('/signup', async (req, res) => {
 // login
 router.post('/login', async (req, res) => {
 
-    const {nickname, password} = req.body
+    const {email, password} = req.body
 
     try{
-        const user = await userModel.findOne({nickname})
+        const user = await userModel.findOne({email})
         if(!user){
             return res.status(402).json({
-                msg : "user nickname, please other nickname"
+                msg : "user email, please other email"
             })
         }
         else{
@@ -92,5 +84,22 @@ router.post('/login', async (req, res) => {
 // update userInfo
 
 // detail delete userInfo
+
+// total delete userInfo
+router.delete('/', (req, res) => {
+
+    userModel
+        .remove()
+        .then(() => {
+            res.json({
+                msg : "delete users"
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                msg : err.message
+            })
+        })
+})
 
 module.exports = router
